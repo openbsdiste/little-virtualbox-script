@@ -1,0 +1,42 @@
+#!/bin/bash
+
+ACTION=$1
+shift
+VM=$*
+if [ "$VM" = "" ]
+then
+  VM="Futur CF2M"
+fi
+
+case "$ACTION" in
+  start)
+    if ! VBoxManage list runningvms | grep "\"$VM\"" > /dev/null
+    then
+      VBoxManage startvm "$VM" --type headless
+    else
+      echo "$VM is already running..."
+    fi
+    ;;
+  stop)
+    if VBoxManage list runningvms | grep "\"$VM\"" > /dev/null
+    then
+      echo -n "ACPI Stopping $VM..."
+      VBoxManage controlvm "$VM" acpipowerbutton
+      while VBoxManage list runningvms | grep "\"$VM\"" > /dev/null
+      do
+        echo -n "."
+        sleep 2 
+      done
+      echo
+    else
+      echo "$VM is not running..."
+    fi
+    ;;
+  status)
+    #VBoxManage showvminfo $VM --machinereadable | grep 'VMState="running"' > /dev/null && echo "VM lancée" || echo "VM non lancée"
+    VBoxManage list runningvms | grep "\"$VM\"" > /dev/null && echo "$VM is running" || echo "$VM is stopped" 
+    ;;
+  *)
+    echo "Usage : $0 {start|status|stop}"
+    ;;
+esac
