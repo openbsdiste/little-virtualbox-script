@@ -3,10 +3,6 @@
 ACTION=$1
 shift
 VM=$*
-if [ "$VM" = "" ]
-then
-  VM="Futur CF2M"
-fi
 
 case "$ACTION" in
   start)
