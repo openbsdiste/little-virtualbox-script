@@ -32,7 +32,12 @@ case "$ACTION" in
     #VBoxManage showvminfo $VM --machinereadable | grep 'VMState="running"' > /dev/null && echo "VM lancée" || echo "VM non lancée"
     VBoxManage list runningvms | grep "\"$VM\"" > /dev/null && echo "$VM is running" || echo "$VM is stopped" 
     ;;
+  restart)
+    echo "Restarting $VM"
+    "$SCRIPT" stop "$VM"
+    "$SCRIPT" start "$VM"
+  ;;
   *)
-    echo "Usage : $0 {start|status|stop}"
+    echo "Usage : $0 {start|status|restart|stop} vmname"
     ;;
 esac
